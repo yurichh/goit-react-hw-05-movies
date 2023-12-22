@@ -32,8 +32,6 @@ const Reviews = () => {
     fetchReviews();
   }, []);
 
-  // const { author_details, content } = reviews;
-  // const { avatar_path, name, rating, username } = author_details;
   return (
     <ul className="review-list">
       {reviews.length === 0 ? (
@@ -51,7 +49,7 @@ const Reviews = () => {
       ) : (
         reviews.map(review => {
           const { author_details, content } = review;
-          const { name, rating, username } = author_details;
+          const { rating, username } = author_details;
           return (
             <li key={username} className="review-item">
               <div className="review-user-wrapper">
