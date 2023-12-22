@@ -28,30 +28,42 @@ const Cast = () => {
         console.error('Error with getting cast', error);
       }
     };
-
     fetchCast();
   }, [id]);
 
   return (
     <div className="cast-wrapper">
       <ul className="cast-list">
-        {cast.map(cas => {
-          return (
-            <li key={cas.id} className="cast-item">
-              {cas.profile_path ? (
+        {cast.length === 0 ? (
+          <div
+            style={{
+              textAlign: 'center',
+              marginTop: 20,
+              fontSize: 40,
+              marginBottom: 20,
+            }}
+          >
+            No cast here
+          </div>
+        ) : (
+          cast.map(cas => {
+            return (
+              <li key={cas.id} className="cast-item">
                 <img
                   className="cast-img"
-                  src={`https://image.tmdb.org/t/p/w500/${cas.profile_path}`}
+                  src={
+                    cas.profile_path
+                      ? `https://image.tmdb.org/t/p/w500/${cas.profile_path}`
+                      : 'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700'
+                  }
                   alt={cas.name}
                 ></img>
-              ) : (
-                <h1>No photo</h1>
-              )}
-              <p className="cast-header">Real name: {cas.name}</p>
-              <p className="cast-header">Character: {cas.character}</p>
-            </li>
-          );
-        })}
+                <p className="cast-header">Real name: {cas.name}</p>
+                <p className="cast-header">Character: {cas.character}</p>
+              </li>
+            );
+          })
+        )}
       </ul>
     </div>
   );
