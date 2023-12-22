@@ -1,24 +1,13 @@
-// import { Link } from 'react-router-dom';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import SearchMoviesList from 'components/SearchMoviesList';
 
 const Movies = () => {
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
-  // const [totalResults, setTotalResults] = useState(0);
-  const [visibleMovies, setVisibleMovies] = useState([]);
   const query = searchParams.get('query');
-  useEffect(() => {
-    if (!query) {
-      return;
-    }
-    fetchData();
-  }, [page]);
-
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     if (!query) {
       return;
     }
@@ -43,14 +32,23 @@ const Movies = () => {
       .request(options)
       .then(({ data }) => {
         console.log(data);
-        // setPage(data.page);
+        setPage(data.page);
         // setTotalResults(data.totalResults);
         setVisibleMovies(data.results);
       })
       .catch(function (error) {
         console.error(error);
       });
-  };
+  }, [page, query]);
+  const location = useLocation();
+  // const [totalResults, setTotalResults] = useState(0);
+  const [visibleMovies, setVisibleMovies] = useState([]);
+  useEffect(() => {
+    if (!query) {
+      return;
+    }
+    fetchData();
+  }, [fetchData, page, query]);
 
   const handleChange = ({ target: { value } }) => {
     if (!value) {
