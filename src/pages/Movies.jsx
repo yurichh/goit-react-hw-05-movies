@@ -8,7 +8,7 @@ const Movies = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
+  // const [totalResults, setTotalResults] = useState(0);
   const [visibleMovies, setVisibleMovies] = useState([]);
   const query = searchParams.get('query');
   useEffect(() => {
@@ -43,8 +43,8 @@ const Movies = () => {
       .request(options)
       .then(({ data }) => {
         console.log(data);
-        setPage(data.page);
-        setTotalResults(data.totalResults);
+        // setPage(data.page);
+        // setTotalResults(data.totalResults);
         setVisibleMovies(data.results);
       })
       .catch(function (error) {
