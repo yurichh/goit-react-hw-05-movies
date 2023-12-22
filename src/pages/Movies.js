@@ -1,14 +1,21 @@
-import { Link, Outlet } from 'react-router-dom';
-const data = [1, 2, 3, 4, 5];
+import { Link } from 'react-router-dom';
+
 const Movies = () => {
+  const handleChange = ({ target: { value } }) => {
+    const searchParams = new URLSearchParams('');
+    console.log('searchParams', searchParams);
+  };
+
   return (
     <>
       <div>Movies page</div>
-      {data.map(d => (
-        <Link key={d} to={`movie/${d}`}>
-          Details {d}
-        </Link>
-      ))}
+      <form>
+        <input
+          name="movieName"
+          placeholder="movie name"
+          onChange={handleChange}
+        ></input>
+      </form>
     </>
   );
 };
