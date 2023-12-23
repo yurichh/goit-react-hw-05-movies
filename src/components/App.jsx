@@ -8,22 +8,20 @@ import Reviews from './Reviews';
 
 const App = () => {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
 
-          <Route path="movies" element={<Movies />} />
+        <Route path="movies" element={<Movies />} />
 
-          <Route path="movies/:id" element={<MovieDetails />}>
-            <Route path="cast" element={<Cast />} />
-            <Route path="reviews" element={<Reviews />} />
-          </Route>
-
-          <Route path="*" element={<div>no page</div>} />
+        <Route path="movies/:id" element={<MovieDetails />}>
+          <Route path="cast" element={<Cast />} />
+          <Route path="reviews" element={<Reviews />} />
         </Route>
-      </Routes>
-    </div>
+
+        <Route path="*" element={<div>no page</div>} />
+      </Route>
+    </Routes>
   );
 };
 export default App;
