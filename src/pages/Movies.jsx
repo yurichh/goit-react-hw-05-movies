@@ -1,95 +1,48 @@
-import { useLocation, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
-import SearchMoviesList from 'components/SearchMoviesList';
+import { useSearchParams } from 'react-router-dom';
+import { lazy, useCallback, useEffect, useState } from 'react';
+import queryMoviesService from 'services/queryMoviesService';
+const MoviesList = lazy(() => import('components/MoviesList'));
 
 const Movies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(1);
+  const [movies, setMovies] = useState([]);
   const query = searchParams.get('query');
-  const fetchData = useCallback(() => {
-    if (!query) {
-      return;
-    }
 
-    const options = {
-      method: 'GET',
-      url: 'https://api.themoviedb.org/3/search/movie',
-      params: {
-        query: `${query}`,
-        include_adult: 'false',
-        language: 'en-US',
-        page: `${page}`,
-      },
-      headers: {
-        accept: 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MDg3N2Q0NWI2ZTQ2NDU3MzJiMzM4ZmQ1MDY5ZmMyYyIsInN1YiI6IjY1ODQyYWNmY2E4MzU0NDE1NmQ3N2Y5YiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xk1Kciqlp7TV4RTr51i1EFwzQ98SxCY_Z1j0emz2etM',
-      },
-    };
+  const renderMovies = useCallback(() => {
+    if (!query) return;
+    queryMoviesService(query).then(resp => {
+      setMovies(resp);
+    });
+  }, [query]);
 
-    axios
-      .request(options)
-      .then(({ data }) => {
-        console.log(data);
-        setPage(data.page);
-        // setTotalResults(data.totalResults);
-        setVisibleMovies(data.results);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  }, [page, query]);
-  const location = useLocation();
-  // const [totalResults, setTotalResults] = useState(0);
-  const [visibleMovies, setVisibleMovies] = useState([]);
   useEffect(() => {
-    if (!query) {
-      return;
-    }
-    fetchData();
-  }, [fetchData, page, query]);
-
-  const handleChange = ({ target: { value } }) => {
-    if (!value) {
-      setSearchParams();
-      return;
-    }
-    setSearchParams({ query: value });
-    console.log('searchParams', searchParams);
-  };
+    renderMovies();
+  }, []);
 
   return (
     <>
       <form
         onSubmit={e => {
           e.preventDefault();
-          fetchData();
+          renderMovies();
         }}
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 20,
-          marginBottom: '20px',
-        }}
+        className="query-form"
       >
         <input
-          style={{
-            textAlign: 'center',
-            padding: '3px 20px',
-            fontSize: 24,
-          }}
+          className="query-input"
           name="movieName"
           placeholder="movie name"
           value={searchParams.get('query') || ''}
-          onChange={handleChange}
+          onChange={({ target: { value } }) => {
+            if (!value) return setSearchParams({});
+            setSearchParams({ query: value });
+          }}
         ></input>
-        <button type="submit" style={{ padding: '9px' }}>
+        <button type="submit" className="buttons">
           Search
         </button>
       </form>
-      <SearchMoviesList visibleMovies={visibleMovies} location={location} />
+      <MoviesList moviesArray={movies} />
     </>
   );
 };

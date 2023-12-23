@@ -1,9 +1,20 @@
-import TrendMoviesList from 'components/TrendMoviesList';
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import MoviesList from 'components/MoviesList';
+import React, { useCallback, useEffect, useState } from 'react';
+import trendMoviesService from 'services/trendMoviesService';
 
 const Home = () => {
-  const location = useLocation();
+  const [movies, setMovies] = useState([]);
+
+  const getTrendMovies = useCallback(async () => {
+    return trendMoviesService().then(resp => {
+      setMovies(resp);
+    });
+  }, []);
+
+  useEffect(() => {
+    getTrendMovies();
+  }, [getTrendMovies]);
+
   return (
     <div>
       <h1
@@ -15,7 +26,7 @@ const Home = () => {
       >
         Trending today
       </h1>
-      <TrendMoviesList location={location} />
+      <MoviesList moviesArray={movies} />
     </div>
   );
 };

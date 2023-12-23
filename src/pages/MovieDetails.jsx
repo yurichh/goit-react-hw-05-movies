@@ -1,50 +1,21 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useParams, Outlet, Link, useLocation } from 'react-router-dom';
+import singleMovieService from 'services/singleMovieService';
 
 const MovieDetails = () => {
   const { id } = useParams();
-
   const [movie, setMovie] = useState({});
-
   const { state } = useLocation();
-  console.log('state', state);
 
   useEffect(() => {
-    const options = {
-      method: 'GET',
-      url: `https://api.themoviedb.org/3/movie/${id}`,
-      params: { language: 'en-US' },
-      headers: {
-        accept: 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MDg3N2Q0NWI2ZTQ2NDU3MzJiMzM4ZmQ1MDY5ZmMyYyIsInN1YiI6IjY1ODQyYWNmY2E4MzU0NDE1NmQ3N2Y5YiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xk1Kciqlp7TV4RTr51i1EFwzQ98SxCY_Z1j0emz2etM',
-      },
-    };
-    const fetchMovies = async () => {
-      try {
-        const { data } = await axios.request(options);
-        setMovie(data);
-      } catch (error) {
-        console.error('Помилка при отриманні фільмів', error);
-      }
-    };
-
-    fetchMovies();
+    singleMovieService(id).then(resp => {
+      setMovie(resp);
+    });
   }, [id]);
   const { poster_path, title, vote_average, overview } = movie;
   return (
     <>
-      <Link
-        style={{
-          fontSize: 20,
-          padding: '2px 20px',
-          backgroundColor: 'black',
-          color: 'white',
-          borderRadius: '5px',
-        }}
-        to={state ? state : '/'}
-      >
+      <Link className="buttons" to={state ? state.from : '/'}>
         Back
       </Link>
       <div className="det-wrapper">
@@ -73,8 +44,9 @@ const MovieDetails = () => {
           </Link>
         </li>
       </ul>
-
-      <Outlet />
+      <Suspense fallback={<span className="loader"></span>}>
+        <Outlet />
+      </Suspense>
     </>
   );
 };
