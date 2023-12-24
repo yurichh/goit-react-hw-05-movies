@@ -23,13 +23,12 @@ const QueryForm = ({ setMovies }) => {
   useEffect(() => {
     if (query === '') return;
     renderMovies();
-  }, []);
+  });
 
   return (
     <form
       onSubmit={e => {
         e.preventDefault();
-        console.log(e);
         renderMovies();
       }}
       className="query-form"
