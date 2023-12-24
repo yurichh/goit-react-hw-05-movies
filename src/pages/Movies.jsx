@@ -5,7 +5,7 @@ const MoviesList = lazy(() => import('components/MoviesList'));
 const QueryForm = lazy(() => import('components/QueryForm'));
 
 const Movies = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState(searchParams.get('query') || '');
 
