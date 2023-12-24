@@ -1,48 +1,20 @@
-import { useSearchParams } from 'react-router-dom';
-import { lazy, useCallback, useEffect, useState } from 'react';
-import queryMoviesService from 'services/queryMoviesService';
+import { lazy, useState } from 'react';
+
 const MoviesList = lazy(() => import('components/MoviesList'));
+const QueryForm = lazy(() => import('components/QueryForm'));
 
 const Movies = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const [movies, setMovies] = useState([]);
-  const query = searchParams.get('query');
-
-  const renderMovies = useCallback(() => {
-    if (!query) return;
-    queryMoviesService(query).then(resp => {
-      setMovies(resp);
-    });
-  }, [query]);
-
-  useEffect(() => {
-    renderMovies();
-  }, []);
-
   return (
     <>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          renderMovies();
-        }}
-        className="query-form"
-      >
-        <input
-          className="query-input"
-          name="movieName"
-          placeholder="movie name"
-          value={searchParams.get('query') || ''}
-          onChange={({ target: { value } }) => {
-            if (!value) return setSearchParams({});
-            setSearchParams({ query: value });
-          }}
-        ></input>
-        <button type="submit" className="buttons">
-          Search
-        </button>
-      </form>
-      <MoviesList moviesArray={movies} />
+      <QueryForm setMovies={setMovies} />
+      {!movies || movies.length === 0 ? (
+        <div style={{ textAlign: 'center', fontSize: 40, marginTop: 100 }}>
+          Please, put a valid name in a field
+        </div>
+      ) : (
+        <MoviesList moviesArray={movies} />
+      )}
     </>
   );
 };

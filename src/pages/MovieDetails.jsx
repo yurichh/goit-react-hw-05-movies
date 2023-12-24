@@ -1,10 +1,10 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useParams, Outlet, Link, useLocation } from 'react-router-dom';
-import singleMovieService from 'services/singleMovieService';
+import { singleMovieService } from '../services/moviesServices';
 
 const MovieDetails = () => {
   const { id } = useParams();
-  const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState(null);
   const { state } = useLocation();
 
   useEffect(() => {
@@ -12,6 +12,7 @@ const MovieDetails = () => {
       setMovie(resp);
     });
   }, [id]);
+  if (!movie) return;
   const { poster_path, title, vote_average, overview } = movie;
   return (
     <>
@@ -21,7 +22,11 @@ const MovieDetails = () => {
       <div className="det-wrapper">
         <div className="det-img-wrapper">
           <img
-            src={`https://image.tmdb.org/t/p/w500/${poster_path}`}
+            src={
+              poster_path
+                ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+                : 'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700'
+            }
             alt={title}
           />
         </div>

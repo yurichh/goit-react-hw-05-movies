@@ -1,6 +1,6 @@
 import MoviesList from 'components/MoviesList';
 import React, { useCallback, useEffect, useState } from 'react';
-import trendMoviesService from 'services/trendMoviesService';
+import { trendMoviesService } from '../services/moviesServices';
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -26,7 +26,7 @@ const Home = () => {
       >
         Trending today
       </h1>
-      <MoviesList moviesArray={movies} />
+      {!movies || movies.length === 0 || <MoviesList moviesArray={movies} />}
     </div>
   );
 };
