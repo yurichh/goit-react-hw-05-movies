@@ -24,6 +24,8 @@ const QueryForm = ({ setQuery }) => {
         className="query-input"
         name="movieName"
         placeholder="movie name"
+        defaultValue={searchParams.get('query')}
+        required
       ></input>
       <button type="submit" className="buttons">
         Search

@@ -10,6 +10,7 @@ const Movies = () => {
   const [query, setQuery] = useState(searchParams.get('query') || '');
 
   useEffect(() => {
+    if (!query) return;
     queryMoviesService(query).then(resp => setMovies(resp));
   }, [query]);
 
